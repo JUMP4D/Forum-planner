@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs !{% endblock %}
+{% block javascripts %}
+    {% block importmap %}
+        {{ importmap(['app', 'search']) }}
+    {% endblock %}
+{% endblock %}
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Liste des utilisateurs</h1>
+
+    <form id ='search-form'>
+        <input type="text" id="search-input" name="search" value="">
+    </form>
+    <table id="user-table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Roles</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in listUsers %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.roles|json_encode }}</td>
+                    <td>
+                        <a href="{{ path('modifier_role', {id: user.id}) }}">Modifier</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Security\EmailVerifier;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -45,6 +46,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
      */
     #[ORM\OneToMany(targetEntity: Forum::class, mappedBy: 'user')]
     private Collection $forums;
+
+    #[ORM\Column]
+    private bool $isVerified = false;
 
     /**
      * @var Collection<int, Team>
@@ -223,4 +227,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     {
         $this->googleAuthenticatorSecret = $googleAuthenticatorSecret;
     }
+    public function isVerified() : bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
 }

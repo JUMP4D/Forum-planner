@@ -12,6 +12,10 @@ class InitController extends AbstractController
     #[Route('/init', name: 'app_init')]
     public function index(): JsonResponse
     {
+
+        $user->getUsername();
+
+
         return $this->json([
             'message' => 'Welcome to your new controller!',
             'path' => 'src/Controller/InitController.php',
