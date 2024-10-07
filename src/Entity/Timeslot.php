@@ -33,6 +33,7 @@ class Timeslot
         $this->teams = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;

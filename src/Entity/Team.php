@@ -21,19 +21,19 @@ class Team
     /**
      * @var Collection<int, Timeslot>
      */
+    #[ORM\ManyToMany(targetEntity: Timeslot::class, inversedBy: 'teams')]
+    private Collection $timeslot;
+
+    /**
+     * @var Collection<int, Timeslot>
+     */
     #[ORM\ManyToMany(targetEntity: Timeslot::class, mappedBy: 'teams')]
     private Collection $timeslots;
 
-    /**
-     * @var Collection<int, User>
-     */
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'teams')]
-    private Collection $members;
-
     public function __construct()
     {
+        $this->timeslot = new ArrayCollection();
         $this->timeslots = new ArrayCollection();
-        $this->members = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -56,16 +56,15 @@ class Team
     /**
      * @return Collection<int, Timeslot>
      */
-    public function getTimeslots(): Collection
+    public function getTimeslot(): Collection
     {
-        return $this->timeslots;
+        return $this->timeslot;
     }
 
     public function addTimeslot(Timeslot $timeslot): static
     {
-        if (!$this->timeslots->contains($timeslot)) {
-            $this->timeslots->add($timeslot);
-            $timeslot->addTeam($this);
+        if (!$this->timeslot->contains($timeslot)) {
+            $this->timeslot->add($timeslot);
         }
 
         return $this;
@@ -73,34 +72,17 @@ class Team
 
     public function removeTimeslot(Timeslot $timeslot): static
     {
-        if ($this->timeslots->removeElement($timeslot)) {
-            $timeslot->removeTeam($this);
-        }
+        $this->timeslot->removeElement($timeslot);
 
         return $this;
     }
 
     /**
-     * @return Collection<int, User>
+     * @return Collection<int, Timeslot>
      */
-    public function getMembers(): Collection
+    public function getTimeslots(): Collection
     {
-        return $this->members;
+        return $this->timeslots;
     }
 
-    public function addMember(User $member): static
-    {
-        if (!$this->members->contains($member)) {
-            $this->members->add($member);
-        }
-
-        return $this;
-    }
-
-    public function removeMember(User $member): static
-    {
-        $this->members->removeElement($member);
-
-        return $this;
-    }
 }

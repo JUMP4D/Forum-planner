@@ -50,18 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
     #[ORM\Column]
     private bool $isVerified = false;
 
-    /**
-     * @var Collection<int, Team>
-     */
-    #[ORM\ManyToMany(targetEntity: Team::class, mappedBy: 'members')]
-    private Collection $teams;
-
-    public function __construct()
-    {
-        $this->forums = new ArrayCollection();
-        $this->teams = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -179,35 +167,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFact
         return $this;
     }
 
-    /**
-     * @return Collection<int, Team>
-     */
-    public function getTeams(): Collection
-    {
-        return $this->teams;
-    }
-
-    public function addTeam(Team $team): static
-    {
-        if (!$this->teams->contains($team)) {
-            $this->teams->add($team);
-            $team->addMember($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTeam(Team $team): static
-    {
-        if ($this->teams->removeElement($team)) {
-            $team->removeMember($this);
-        }
-
-        return $this;
-    }
-
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $googleAuthenticatorSecret;
+
     public function isGoogleAuthenticatorEnabled(): bool
     {
         return null !== $this->googleAuthenticatorSecret;
