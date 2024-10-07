@@ -44,11 +44,24 @@ final class StandController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_stand_show', methods: ['GET'])]
-    public function show(Stand $stand): Response
+    #[Route('/{id}', name: 'app_stand_show', methods: ['GET', 'POST'])]
+    public function show(Request $request, Stand $stand, EntityManagerInterface $entityManager): Response
     {
+        $evaluation = new Evaluation();
+        $evaluation->setStand($stand);
+
+        $form = $this->createForm(EvalStandType::class, $evaluation);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($evaluation);
+            $entityManager->flush();
+            return $this->redirectToRoute('app_stand_show', ['id' => $stand->getId()]);
+        }
+
         return $this->render('stand/show.html.twig', [
             'stand' => $stand,
+            'form' => $form,
         ]);
     }
 
@@ -79,27 +92,5 @@ final class StandController extends AbstractController
         }
 
         return $this->redirectToRoute('app_stand_index', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/{id}/evaluation', name: 'app_stand_evaluation', methods: ['GET', 'POST'])]
-    public function evaluation(Stand $stand, EntityManagerInterface $entityManager, Request $request): Response
-    {
-
-        $evaluation = new Evaluation();
-        $evaluation->setStand($stand);
-
-        $form = $this->createForm(EvalStandType::class, $evaluation);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($evaluation);
-            $entityManager->flush();
-            return $this->redirectToRoute('app_stand_index');
-        }
-
-        return $this->render('stand/eval.html.twig', [
-            'stand' => $stand,
-            'form' => $form->createView(),
-        ]);
     }
 }

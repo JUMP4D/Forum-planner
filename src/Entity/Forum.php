@@ -136,4 +136,25 @@ class Forum
 
         return $this;
     }
+
+    public function getAverageNoteResult(): ?float
+    {
+        $totalSum = 0;
+        $totalNotes = 0;
+
+        foreach ($this->stands as $stand) {
+            $averageNote = $stand->getAverageNote();
+            if ($averageNote !== null) {
+                $totalSum += $averageNote * count($stand->getEvaluations());
+                $totalNotes += count($stand->getEvaluations());
+            }
+        }
+
+        if ($totalNotes === 0) {
+            return 0; // No notes available
+        }
+
+        return $totalSum / $totalNotes;
+    }
+
 }

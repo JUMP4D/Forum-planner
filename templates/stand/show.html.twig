@@ -16,6 +16,14 @@
                 <td>{{ stand.title }}</td>
             </tr>
             <tr>
+                <th>Notes</th>
+                <td>
+                    {% for evaluation in stand.evaluations %}
+                        {{ evaluation.note }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
                 <th>Note moyenne</th>
                 <td>{{ stand.getAverageNote }}</td>
             </tr>
@@ -38,6 +46,13 @@
         </tbody>
     </table>
 
+    <h3>Ajouter une note </h3>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn">{{ button_label|default('Ajouter') }}</button>
+    {{ form_end(form) }}
+    <br>
     <a href="{{ path('app_stand_index') }}">back to list</a>
 
     <a href="{{ path('app_stand_edit', {'id': stand.id}) }}">edit</a>
