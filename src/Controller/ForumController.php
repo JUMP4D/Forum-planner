@@ -10,8 +10,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/forum')]
+#[IsGranted('ROLE_USER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
 final class ForumController extends AbstractController
 {
     #[Route(name: 'app_forum_index', methods: ['GET'])]
@@ -23,6 +25,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/new', name: 'app_forum_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ORGANIZER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $forum = new Forum();
@@ -43,6 +46,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_forum_show', methods: ['GET'])]
+    #[IsGranted('ROLE_USER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function show(Forum $forum): Response
     {
         return $this->render('forum/show.html.twig', [
@@ -51,6 +55,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_forum_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ORGANIZER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function edit(Request $request, Forum $forum, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ForumType::class, $forum);
@@ -69,6 +74,7 @@ final class ForumController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_forum_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ORGANIZER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function delete(Request $request, Forum $forum, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$forum->getId(), $request->getPayload()->getString('_token'))) {

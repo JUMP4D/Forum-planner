@@ -19,6 +19,7 @@ class RoleType extends AbstractType
                 'choices' => [
                     'Admin' => 'ROLE_ADMIN',
                     'User' => 'ROLE_USER',
+                    'Organisateur' => 'ROLE_ORGANIZER',
                 ],
                 'multiple' => true,
                 'expanded' => true,

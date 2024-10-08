@@ -12,11 +12,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/stand')]
+
 final class StandController extends AbstractController
 {
     #[Route(name: 'app_stand_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function index(StandRepository $standRepository): Response
     {
         return $this->render('stand/index.html.twig', [
@@ -25,6 +28,7 @@ final class StandController extends AbstractController
     }
 
     #[Route('/new', name: 'app_stand_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ORGANIZER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $stand = new Stand();
@@ -45,6 +49,7 @@ final class StandController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_stand_show', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function show(Request $request, Stand $stand, EntityManagerInterface $entityManager): Response
     {
         $evaluation = new Evaluation();
@@ -66,6 +71,7 @@ final class StandController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_stand_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ORGANIZER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function edit(Request $request, Stand $stand, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(StandType::class, $stand);
@@ -84,6 +90,7 @@ final class StandController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_stand_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ORGANIZER', message: "Vous n'êtes pas autorisé à accéder au tableau de bord d'administration.")]
     public function delete(Request $request, Stand $stand, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$stand->getId(), $request->getPayload()->getString('_token'))) {
